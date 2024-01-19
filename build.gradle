@@ -1,0 +1,56 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.0'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.serov.alex'
+version = '0.0.1-SNAPSHOT'
+
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	// https://mvnrepository.com/artifact/org.telegram/telegrambots-spring-boot-starter
+	implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.8.0'
+	// https://mvnrepository.com/artifact/org.telegram/telegrambots-abilities
+	implementation group: 'org.telegram', name: 'telegrambots-abilities', version: '6.8.0'
+// https://mvnrepository.com/artifact/org.telegram/telegrambotsextensions
+	//implementation group: 'org.telegram', name: 'telegrambotsextensions', version: '6.8.0'
+
+	implementation 'org.slf4j:slf4j-api:2.0.7'
+	implementation 'com.mpatric:mp3agic:0.9.1'
+	implementation 'com.google.code.gson:gson:2.10.1'
+//	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+task customFatJar(type: Jar) {
+	manifest {
+		attributes 'Main-Class': 'com.serov.alex.MusicFileFinderBotApplication'
+	}
+	archiveBaseName = 'all-in-one-jar'
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
